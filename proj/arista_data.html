@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Arista Interface Data</title>
+    <style>
+        .dot-green {
+            height: 10px;
+            width: 10px;
+            background-color: green;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        .dot-red {
+            height: 10px;
+            width: 10px;
+            background-color: red;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        table {
+            border-collapse: collapse;
+            width: 25%;
+        }
+        th, td {
+            text-align: left;
+            padding: 8px;
+        }
+        tr:nth-child(even){background-color: #f2f2f2}
+        th {
+            background-color: #4CAF50;
+            color: black;
+        }
+    </style>
+</head>
+<body>
+<div class="container-fluid">
+
+  <h1>Arista Data</h1>
+
+  <!-- Nav tabs -->
+  <ul class="nav nav-tabs">
+    <li class="active"><a data-toggle="tab" href="#physical">Physical Interfaces</a></li>
+    <li><a data-toggle="tab" href="#vlan">VLAN Interfaces</a></li>
+    <li><a data-toggle="tab" href="#port-channel">Port-Channel Interfaces</a></li>
+  </ul>
+
+  <!-- Tab panes -->
+  <div class="tab-content">
+    <div id="physical" class="tab-pane fade in active">
+      <h3>Physical Interfaces</h3>
+      <table class="table table-bordered table-hover table-condensed">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for row_data in physical_table_data %}
+          <tr>
+            {% for intf_data in row_data %}
+            <td>{{ intf_data.name }}</td>
+            <td>{{ intf_data.status|safe }}</td>
+            {% endfor %}
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <div id="vlan" class="tab-pane fade">
+      <h3>VLAN Interfaces</h3>
+      <table class="table table-bordered table-hover table-condensed">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for intf_data in vlan_data %}
+          <tr>
+            <td>{{ intf_data.name }}</td>
+            <td>{{ intf_data.status|safe }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+	<div id="port-channel" class="tab-pane fade">
+	  <h3>Port-Channel Interfaces</h3>
+	  <table class="table table-bordered table-hover table-condensed">
+		<thead>
+		  <tr>
+			<th>Name</th>
+			<th>Status</th>
+			<th>Speed</th>
+		  </tr>
+		</thead>
+		<tbody>
+		  {% for intf_data in port_channel_data %}
+		  <tr>
+			<td>{{ intf_data.name }}</td>
+			<td>{{ intf_data.status|safe }}</td>
+			<td>{{ intf_data.speed }}</td>
+		  </tr>
+		  {% for sub_intf_data in intf_data.sub_interfaces %}
+		  <tr>
+			<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ sub_intf_data.name }}</td>
+			<td>{{ sub_intf_data.status|safe }}</td>
+			<td>{{ sub_intf_data.speed }}</td>
+		  </tr>
+		  {% endfor %}
+		  {% endfor %}
+		</tbody>
+	  </table>
+	  <button class="btn btn-primary" onclick="addTab()">Add Port-Channel Interface</button>
+	  <script>
+		  function addTab() {
+			  var tabContent = '<h3>Port-Channel Interface #</h3>' +
+								'<div>Name: <input type="text" id="name"></div>' +
+								'<div>Status: <input type="text" id="status"></div>' +
+								'<div>Speed: <input type="text" id="speed"></div>';
+			  var tabTitle = 'Port-Channel Interface #';
+			  var numTabs = $('#port-channel-tabs .nav-tabs li').length;
+			  var newTabContent = tabContent.replace(/#/g, numTabs + 1);
+			  var newTabTitle = tabTitle.replace(/#/g, numTabs + 1);
+			  $('#port-channel-tabs .nav-tabs').append('<li><a data-toggle="tab" href="#port-channel-' + (numTabs + 1) + '">' + newTabTitle + '</a></li>');
+			  $('#port-channel-tabs .tab-content').append('<div id="port-channel-' + (numTabs + 1) + '" class="tab-pane">' + newTabContent + '</div>');
+		  }
+	  </script>
+	</div>
+	</div>
+{% endblock %}
+    <script>
+        setInterval(function() {
+            location.reload();
+        }, 5000); // refresh every 5 seconds (5000 milliseconds)
+    </script>
+</body>
+</html>

@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Connect App</title>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+  <style>
+    .nav-tabs .nav-link {
+      padding: .5rem 1rem;
+    }
+  </style>
+  <script>
+	  $("#login-form").submit(function(e) {
+	  e.preventDefault();
+
+	  // Get the values from the form
+	  var ipAddress = $("#ip-address").val();
+	  var username = $("#username").val();
+	  var password = $("#password").val();
+
+	  // Validate the login info
+	  if (ipAddress !== "" && username !== "" && password !== "") {
+		// Connect to the device using eAPI and check if the connection was successful
+		var conn = new window.eapi.connect(ipAddress, username, password);
+		if (conn.isConnected()) {
+		  // Create the new tab and add it to the tabs list
+		  var new_tab_title = ipAddress;
+		  var new_tab = '<li class="nav-item"><a class="nav-link" id="' + new_tab_title + '-tab" data-toggle="tab" href="#' + new_tab_title + '" role="tab" aria-controls="' + new_tab_title + '" aria-selected="false">' + new_tab_title + '</a><span class="ui-icon ui-icon-close" role="presentation">Remove Tab</span></li>';
+		  $('#myTab').append(new_tab);
+
+		  // Add the content for the new tab
+		  var new_tab_content = '<div class="tab-pane fade" id="' + new_tab_title + '" role="tabpanel" aria-labelledby="' + new_tab_title + '-tab"><p>Content for tab ' + new_tab_title + '</p></div>';
+		  $('#myTabContent').append(new_tab_content);
+
+		  // Close the modal and reset the form
+		  $("#myModal").modal("hide");
+		  $("#login-form")[0].reset();
+		}
+		else {
+		  alert("Could not connect to device.");
+		}
+	  }
+	  else {
+		alert("Please provide all the login information.");
+	  }
+	});
+
+    $(document).ready(function(){
+      $('#myTab a').on('click', function (e) {
+        e.preventDefault();
+        $(this).tab('show');
+      });
+
+      $("#add-tab-btn").click(function(){
+        $("#myModal").modal();
+      });
+
+      $("#connect-form").submit(function(e) {
+        e.preventDefault();
+
+        // Get the values from the form
+        var hostname = $("#hostname").val();
+        var username = $("#username").val();
+        var password = $("#password").val();
+
+        // Connect to the device using eAPI and check if the connection was successful
+        var conn = new window.eapi.connect(hostname, username, password);
+        if (conn.isConnected()) {
+          // Create the new tab and add it to the tabs list
+          var tab_title = $("#tab-title").val();
+          var new_tab = '<li class="nav-item"><a class="nav-link" id="' + tab_title + '-tab" data-toggle="tab" href="#' + tab_title + '" role="tab" aria-controls="' + tab_title + '" aria-selected="false">' + tab_title + '</a><span class="ui-icon ui-icon-close" role="presentation">Remove Tab</span></li>';
+          $('#myTab').append(new_tab);
+
+          // Add the content for the new tab
+          var new_tab_content = '<div class="tab-pane fade" id="' + tab_title + '" role="tabpanel" aria-labelledby="' + tab_title + '-tab"><p>Content for tab ' + tab_title + '</p></div>';
+          $('#myTabContent').append(new_tab_content);
+
+          // Close the modal and reset the form
+          $("#myModal").modal("hide");
+          $("#connect-form")[0].reset();
+        }
+        else {
+          alert("Could not connect to device.");
+        }
+      });
+
+      var tabs = $("#myTab").tabs({
+        activate: function(event, ui) {
+          if (ui.newTab.is("#add-tab")) {
+            $("#myModal").modal();
+            tabs.tabs('select', -2);
+          }
+        }
+      });
+
+      // Close icon: removing the tab on click
+      tabs.delegate("span.ui-icon-close", "click", function () {
+        var panelId = $(this).closest("li").remove().attr("aria-controls");
+        $("#" + panelId).remove();
+        tabs.tabs("refresh");
+      });
+    });
+  </script>
+</head>
+<body>
+
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="#">Connect App</a>
+  </nav>
+
+  <div class="container mt-4">
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+      <li class="nav-item">
+        <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Home</a>
+      </li>
+    </ul>
+    <div class="tab-content" id="myTabContent">
+      <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+        <h1>Welcome to the Connect App</h1>
+        <button id="add-tab-btn" type="button" class="btn btn-primary">+</button>
+      </div>
+    </div>
+  </div>
+
+			<!-- Modal -->
+			<div class="modal fade" id="myModal">
+			  <div class="modal-dialog">
+				<div class="modal-content">
+				  <div class="modal-header">
+					<h4 class="modal-title">ARISTA Login Form</h4>
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+				  </div>
+				  <div class="modal-body">
+					<form id="login-form">
+					  <div class="form-group">
+						<label for="hostname">IP Address:</label>
+						<input type="text" class="form-control" id="ip-address" name="ip-address" required>
+					  </div>
+					  <div class="form-group">
+						<label for="username">Username:</label>
+						<input type="text" class="form-control" id="username" name="username" required>
+					  </div>
+					  <div class="form-group">
+						<label for="password">Password:</label>
+						<input type="password" class="form-control" id="password" name="password" required>
+					  </div>
+					  <button type="submit" class="btn btn-primary">Login</button>
+					</form>
+				  </div>
+				</div>
+			  </div>
+			</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+	$(function() {
+
+	  var tabs = $("#tabs").tabs();
+
+	  // Close icon: removing the tab on click
+	  tabs.delegate( "span.ui-icon-close", "click", function() {
+		var panelId = $( this ).closest( "li" ).remove().attr( "aria-controls" );
+		$( "#" + panelId ).remove();
+		tabs.tabs( "refresh" );
+	  });
+
+	  // Add new tab when modal is submitted
+	  $( "#login-form" ).submit(function( event ) {
+		event.preventDefault();
+		var username = $("#username").val();
+		var password = $("#password").val();
+		
+		// Connect to ARISTA using eAPI and validate credentials
+		// If successful, add new tab with ARISTA hostname as title and switch to new tab
+		// If unsuccessful, display error message in modal
+		
+		// Clear modal fields and hide modal
+		$("#username").val("");
+		$("#password").val("");
+		$("#login-modal").modal("hide");
+	  });
+
+	  // Modal: showing the dialog
+	  $( "#login-modal" ).dialog({
+		autoOpen: false,
+		modal: true,
+		buttons: {
+		  "Connect": function() {
+			$( "#login-form" ).submit();
+		  },
+		  Cancel: function() {
+			$( this ).dialog( "close" );
+		  }
+		}
+	  });
+
+	  // Modal: opening on click
+	  $( "#add-tab" ).button().on( "click", function() {
+		$( "#login-modal" ).dialog( "open" );
+	  });
+
+	});
+
+  <!-- Tab links -->
+  <div class="tab">
+    <button class="tablinks" onclick="openTab(event, 'default')">Default</button>
+  </div>
+
+  <!-- Tab content -->
+  <div id="default" class="tabcontent">
+    <h3>Default Tab</h3>
+    <p>Welcome to the default tab!</p>
+  </div>
+</div>
+</body>
+</html>

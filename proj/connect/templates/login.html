@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+  <h2>Add Device</h2>
+  <form method="post">
+    {% csrf_token %}
+    <div class="form-group">
+      <label for="hostname">Hostname:</label>
+      {{ form.hostname }}
+      {% if form.hostname.errors %}
+        <div class="text-danger">{{ form.hostname.errors|join:", " }}</div>
+      {% endif %}
+    </div>
+    <div class="form-group">
+      <label for="ip_address">IP Address:</label>
+      {{ form.ip_address }}
+      {% if form.ip_address.errors %}
+        <div class="text-danger">{{ form.ip_address.errors|join:", " }}</div>
+      {% endif %}
+    </div>
+    <div class="form-group">
+      <label for="username">Username:</label>
+      {{ form.username }}
+      {% if form.username.errors %}
+        <div class="text-danger">{{ form.username.errors|join:", " }}</div>
+      {% endif %}
+    </div>
+    <div class="form-group">
+      <label for="password">Password:</label>
+      {{ form.password }}
+      {% if form.password.errors %}
+        <div class="text-danger">{{ form.password.errors|join:", " }}</div>
+      {% endif %}
+    </div>
+    <button type="submit" class="btn btn-primary">Add Device</button>
+  </form>
+</div>
+{% endblock %}

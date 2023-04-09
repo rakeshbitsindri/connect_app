@@ -1,0 +1,61 @@
+<!-- connect.html -->
+<!DOCTYPE html>
+<html>
+<head>
+	<title>{% block title %}{% endblock %}</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	
+	<!-- Bootstrap CSS -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/css/bootstrap.min.css">
+	
+	<!-- jQuery library -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+	
+	<!-- Bootstrap JS -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/js/bootstrap.min.js"></script>
+	
+	{% block extra_head %}{% endblock %}
+		<title>Arista Interface Status</title>
+	<meta charset="UTF-8">
+    <title>{% block title %}Default Title{% endblock %}</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/custom.css' %}">
+    <script src="{% static 'js/jquery.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+</head>
+<body>
+
+{% block content %}{% endblock %}
+
+{% block extra_scripts %}{% endblock %}
+	<h1>Arista Interface Status</h1>
+	<table style="width:100%">
+		<tr>
+			<th>Interface Name</th>
+			<th>Status</th>
+			<th>Interface Name</th>
+			<th>Status</th>
+		</tr>
+		{% for row in table_data %}
+		<tr>
+			{% if row.0 %}
+			<td>{{ row.0.name }}</td>
+			<td>{{ row.0.status }}</td>
+			{% else %}
+			<td></td>
+			<td></td>
+			{% endif %}
+			{% if row.1 %}
+			<td>{{ row.1.name }}</td>
+			<td>{{ row.1.status }}</td>
+			{% else %}
+			<td></td>
+			<td></td>
+			{% endif %}
+		</tr>
+		{% endfor %}
+	</table>
+</body>
+</html>

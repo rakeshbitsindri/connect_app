@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block content %} 
+<!DOCTYPE html>
+<html lang="en">
+
+<body>
+<div class="container-fluid">
+  <!-- Nav tabs -->
+  <ul class="nav nav-tabs">
+    {% for device in devices %}
+        {% if loop.index == 1 %}
+            <li class="active"><a data-toggle="tab" href="#{{ device.alias }}">{{ device.alias }}</a></li>
+        {% else %}
+            <li><a data-toggle="tab" href="#{{ device.alias }}">{{ device.alias }}</a></li>
+        {% endif %}
+    {% endfor %}
+    <li><a data-toggle="modal" href="#addDeviceModal"><span class="glyphicon glyphicon-plus"></span></a></li>
+  </ul>
+
+  <!-- Tab panes -->
+  <div class="tab-content">
+    {% for device in devices %}
+        {% if loop.index == 1 %}
+            <div id="{{ device.alias }}" class="tab-pane fade in active">
+        {% else %}
+            <div id="{{ device.alias }}" class="tab-pane fade">
+        {% endif %}
+          <h3>{{ device.hostname }}</h3>
+          <table class="table table-bordered table-hover table-condensed">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Status</th>
+                <th>Speed</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for intf_data in device.interface_data %}
+              <tr>
+                <td>{{ intf_data.name }}</td>
+                <td>
+                  {% if intf_data.status == 'up' %}
+                    <span class="dot-green"></span>
+                  {% else %}
+                    <span class="dot-red"></span>
+                  {% endif %}
+                  {{ intf_data.status|safe }}
+                </td>
+                <td>{{ intf_data.speed }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+    {% endfor %}
+  </div>
+
+</div>       
+
+{% endblock %}
+<!--     <script>
+        setInterval(function() {
+            location.reload();
+        }, 5000); // refresh every 5 seconds (5000 milliseconds)
+    </script> -->
+</body>
+</html>
+
+
+
+
+
+
+
+

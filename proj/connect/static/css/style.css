@@ -1,0 +1,37 @@
+<style>
+  .nav-tabs {
+    border-bottom: none;
+    padding-left: 20px;
+  }
+  .nav-tabs .nav-link {
+    border: none;
+    margin-right: 5px;
+    background: #eee;
+    border-radius: 5px 5px 0 0;
+    color: #333;
+    font-weight: bold;
+  }
+  .nav-tabs .nav-link.active,
+  .nav-tabs .nav-link:hover {
+    background: #fff;
+    color: #333;
+    border: none;
+    border-radius: 5px 5px 0 0;
+  }
+  .nav-tabs .nav-link.disabled {
+    color: #bbb;
+    cursor: not-allowed;
+  }
+  .tab-content {
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-top: none;
+    border-radius: 0 5px 5px 5px;
+  }
+  .tab-pane {
+    display: none;
+  }
+  .tab-pane.active {
+    display: block;
+  }
+</style>

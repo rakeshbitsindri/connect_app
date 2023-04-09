@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Arista Interface Data</title>
+    <style>
+        .dot-green {
+            height: 10px;
+            width: 10px;
+            background-color: green;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        .dot-red {
+            height: 10px;
+            width: 10px;
+            background-color: red;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        table {
+            border-collapse: collapse;
+            width: 25%;
+        }
+        th, td {
+            text-align: left;
+            padding: 8px;
+        }
+        tr:nth-child(even){background-color: #f2f2f2}
+        th {
+            background-color: #4CAF50;
+            color: black;
+        }
+    </style>
+</head>
+<body>
+<div class="container-fluid">
+
+  <h1>Arista Data</h1>
+
+  <!-- Nav tabs -->
+  <ul class="nav nav-tabs">
+    {% for device in devices %}
+        {% if loop.index == 1 %}
+            <li class="active"><a data-toggle="tab" href="#{{ device.alias }}">{{ device.alias }}</a></li>
+        {% else %}
+            <li><a data-toggle="tab" href="#{{ device.alias }}">{{ device.alias }}</a></li>
+        {% endif %}
+    {% endfor %}
+    <li><a data-toggle="modal" href="#addDeviceModal"><span class="glyphicon glyphicon-plus"></span></a></li>
+  </ul>
+
+  <!-- Tab panes -->
+  <div class="tab-content">
+    {% for device in devices %}
+        {% if loop.index == 1 %}
+            <div id="{{ device.alias }}" class="tab-pane fade in active">
+        {% else %}
+            <div id="{{ device.alias }}" class="tab-pane fade">
+        {% endif %}
+          <h3>{{ device.hostname }}</h3>
+          <table class="table table-bordered table-hover table-condensed">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Status</th>
+                <th>Speed</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for intf_data in device.interface_data %}
+              <tr>
+                <td>{{ intf_data.name }}</td>
+                <td>
+                  {% if intf_data.status == 'up' %}
+                    <span class="dot-green"></span>
+                  {% else %}
+                    <span class="dot-red"></span>
+                  {% endif %}
+                  {{ intf_data.status|safe }}
+                </td>
+                <td>{{ intf_data.speed }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+    {% endfor %}
+  </div>
+
+</div>       
+<!-- Add Device Modal -->
+<div class="modal fade" id="addDeviceModal" tabindex="-1" role="dialog" aria-labelledby="addDeviceModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="addDeviceModalLabel">Add Device</h4>
+      </div>
+      <form method="post" action="{% url 'add_device' %}">
+        {% csrf_token %}
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="hostname">Hostname / IP:</label>
+            <input type="text" class="form-control" name="hostname" required>
+          </div>
+          <div class="form-group">
+            <label for="username">Username:</label>
+            <input type="text" class="form-control" name="username" required>
+          </div>
+          <div class="form-group">
+            <label for="password">Password:</label>
+            <input type="password" class="form-control" name="password" required>
+          </div>
+          <div class="form-group">
+            <label for="alias">Alias:</label>
+            <input type="text" class="form-control" name="alias" required>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Save</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
